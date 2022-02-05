@@ -14,7 +14,13 @@ function main() {
   
     const scene = new THREE.Scene();
     
-    const material = new THREE.MeshBasicMaterial({color: 0x44aa88});
+    const color = 0xFFFFFF;
+    const intensity = 1;
+    const light = new THREE.DirectionalLight(color, intensity);
+    light.position.set(-1, 2, 4);
+    scene.add(light);
+    
+    const material = new THREE.MeshPhongMaterial({color: 0x44aa88});  // greenish blue
     material.side = THREE.DoubleSide;
 
     var flatVs00 = [0.0000, 0.0000, 0.0000];
