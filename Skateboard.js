@@ -21,68 +21,83 @@ function main() {
     scene.add(light);
     
     const material = new THREE.MeshPhongMaterial({color: 0x44aa88});
-    material.side = THREE.DoubleSide;
+    //material.side = THREE.DoubleSide;
 
-    const boardLength = 0.81280162560;
-    const boardWidth = 0.20955041910;
-    const lipLength = boardWidth/2;
-    const crease = boardLength/2 - lipLength;
-    const drop = crease - 0.04;
-    const edgeHeight = 0.01587503175;
-    const edgeDepth = (boardWidth/2) * 5/6;
-    const lipRise = 0.05397510795;
+    var halfBoardLength = 0.4064;
+    var halfBoardWidth = 0.1048;
+    var boardRise = .0540;
+    var boardThickness = .0095;
 
-    var quartVerts = [
-    [[0, edgeHeight, boardWidth/2],[drop, edgeHeight, boardWidth/2],[crease, edgeHeight, boardWidth/2],
-        [Math.cos(5*Math.PI/12)*lipLength + crease, Math.cos(5*Math.PI/12)*lipRise, Math.sin(5*Math.PI/12)*lipLength],
-        [Math.cos(Math.PI/3)*lipLength + crease, Math.cos(Math.PI/3)*lipRise, Math.sin(Math.PI/3)*lipLength],
-        [Math.cos(Math.PI/4)*lipLength + crease, Math.cos(Math.PI/4)*lipRise, Math.sin(Math.PI/4)*lipLength],
-        [Math.cos(Math.PI/6)*lipLength + crease, Math.cos(Math.PI/6)*lipRise, Math.sin(Math.PI/6)*lipLength],
-        [Math.cos(Math.PI/12)*lipLength + crease, Math.cos(Math.PI/12)*lipRise, Math.sin(Math.PI/12)*lipLength],
-        [boardLength/2, (boardLength/2 - crease) * lipRise, 0]],
-    [[0, edgeHeight * 2/3, edgeDepth],[drop, edgeHeight * 2/3, edgeDepth],[crease, edgeHeight * 5/6, edgeDepth],[(Math.cos(5*Math.PI/12)*lipLength)*3/4 + crease, (Math.cos(5*Math.PI/12)*3/4)*lipRise, (Math.sin(5*Math.PI/12)*lipLength)*3/4]],
-    [[0, 0, 0],[drop, 0, 0],[crease, 0, 0]]]; 
+    var boardHeight = boardRise + boardThickness;
+    var crease = halfBoardLength - halfBoardWidth;
+    var midRiseX = (halfBoardLength + crease) / 2;
+    var midRiseY = (boardHeight + boardThickness) / 2;
 
-    var tris = [
-        [quartVerts[2][0], quartVerts[2][1], quartVerts[1][0]],
-        [quartVerts[2][1], quartVerts[1][1], quartVerts[1][0]],
-        [quartVerts[1][0], quartVerts[1][1], quartVerts[0][0]],
-        [quartVerts[1][1], quartVerts[0][1], quartVerts[0][0]],
-        [quartVerts[2][1], quartVerts[2][2], quartVerts[1][1]],
-        [quartVerts[2][2], quartVerts[1][2], quartVerts[1][1]],
-        [quartVerts[1][1], quartVerts[1][2], quartVerts[0][1]],
-        [quartVerts[1][2], quartVerts[0][2], quartVerts[0][1]],
-        [quartVerts[1][2], quartVerts[1][3], quartVerts[0][2]],
-        [quartVerts[1][3], quartVerts[0][3], quartVerts[0][2]],
-        [quartVerts[2][2], quartVerts[1][3], quartVerts[1][2]],
-        [quartVerts[2][2], quartVerts[0][4], quartVerts[0][3]],
-        [quartVerts[2][2], quartVerts[0][5], quartVerts[0][4]],
-        [quartVerts[2][2], quartVerts[0][6], quartVerts[0][5]],
-        [quartVerts[2][2], quartVerts[0][7], quartVerts[0][6]],
-        [quartVerts[2][2], quartVerts[0][8], quartVerts[0][7]]
+    var verts = [
+        [[-halfBoardLength, boardHeight, halfBoardWidth/3],[-midRiseX, midRiseY, halfBoardWidth],[-crease, boardThickness, halfBoardWidth],[crease, boardThickness, halfBoardWidth],[midRiseX, midRiseY, halfBoardWidth],[halfBoardLength, boardHeight, halfBoardWidth/3]],
+        [[-halfBoardLength, boardHeight, -halfBoardWidth/3],[-midRiseX, midRiseY, -halfBoardWidth],[-crease, boardThickness, -halfBoardWidth],[crease, boardThickness, -halfBoardWidth],[midRiseX, midRiseY, -halfBoardWidth],[halfBoardLength, boardHeight, -halfBoardWidth/3]],
+        [[-halfBoardLength, boardRise, halfBoardWidth/3],[-midRiseX, boardRise/2, halfBoardWidth],[-crease, 0, halfBoardWidth],[crease, 0, halfBoardWidth],[midRiseX, boardRise/2, halfBoardWidth],[halfBoardLength, boardRise, halfBoardWidth/3]],
+        [[-halfBoardLength, boardRise, -halfBoardWidth/3],[-midRiseX, boardRise/2, -halfBoardWidth],[-crease, 0, -halfBoardWidth],[crease, 0, -halfBoardWidth],[midRiseX, boardRise/2, -halfBoardWidth],[halfBoardLength, boardRise, -halfBoardWidth/3]]
     ]
 
+    var tris = [
+        //bottom
+        [verts[3][0], verts[2][1], verts[3][1]],
+        [verts[2][0], verts[2][1], verts[3][0]],
+        [verts[3][1], verts[2][2], verts[3][2]],
+        [verts[2][1], verts[2][2], verts[3][1]],
+        [verts[3][2], verts[2][3], verts[3][3]],
+        [verts[2][2], verts[2][3], verts[3][2]],
+        [verts[3][3], verts[2][4], verts[3][4]],
+        [verts[2][3], verts[2][4], verts[3][3]],
+        [verts[3][4], verts[2][5], verts[3][5]],
+        [verts[2][4], verts[2][5], verts[3][4]],
+        //top
+        [verts[1][0], verts[1][1], verts[0][1]],
+        [verts[0][0], verts[1][0], verts[0][1]],
+        [verts[1][1], verts[1][2], verts[0][2]],
+        [verts[0][1], verts[1][1], verts[0][2]],
+        [verts[1][2], verts[1][3], verts[0][3]],
+        [verts[0][2], verts[1][2], verts[0][3]],
+        [verts[1][3], verts[1][4], verts[0][4]],
+        [verts[0][3], verts[1][3], verts[0][4]],
+        [verts[1][4], verts[1][5], verts[0][5]],
+        [verts[0][4], verts[1][4], verts[0][5]],
+        //edge
+        [verts[3][0], verts[1][1], verts[1][0]],
+        [verts[3][0], verts[3][1], verts[1][1]],
+        [verts[3][1], verts[1][2], verts[1][1]],
+        [verts[3][1], verts[3][2], verts[1][2]],
+        [verts[3][2], verts[1][3], verts[1][2]],
+        [verts[3][2], verts[3][3], verts[1][3]],
+        [verts[3][3], verts[1][4], verts[1][3]],
+        [verts[3][3], verts[3][4], verts[1][4]],
+        [verts[3][4], verts[1][5], verts[1][4]],
+        [verts[3][4], verts[3][5], verts[1][5]],
 
+        [verts[3][5], verts[0][5], verts[1][5]],
+        [verts[3][5], verts[2][5], verts[0][5]],
+
+        [verts[2][5], verts[0][4], verts[0][5]],
+        [verts[2][5], verts[2][4], verts[0][4]],
+        [verts[2][4], verts[0][3], verts[0][4]],
+        [verts[2][4], verts[2][3], verts[0][3]],
+        [verts[2][3], verts[0][2], verts[0][3]],
+        [verts[2][3], verts[2][2], verts[0][2]],
+        [verts[2][2], verts[0][1], verts[0][2]],
+        [verts[2][2], verts[2][1], verts[0][1]],
+        [verts[2][1], verts[0][0], verts[0][1]],
+        [verts[2][1], verts[2][0], verts[0][0]],
+
+        [verts[2][0], verts[1][0], verts[0][0]],
+        [verts[2][0], verts[3][0], verts[1][0]]
+    ]
     const positions = [];
+
     for (const tri of tris) {
-        positions.push(tri[0]);
-        positions.push(tri[1]);
-        positions.push(tri[2]);
-    }
-    for (const tri of tris) {
-        positions.push(-tri[0]);
-        positions.push(tri[1]);
-        positions.push(tri[2]);
-    }
-    for (const tri of tris) {
-        positions.push(-tri[0]);
-        positions.push(tri[1]);
-        positions.push(-tri[2]);
-    }
-    for (const tri of tris) {
-        positions.push(tri[0]);
-        positions.push(tri[1]);
-        positions.push(-tri[2]);
+        positions.push(...tri[0]);
+        positions.push(...tri[1]);
+        positions.push(...tri[2]);
     }
 
     const board = new THREE.BufferGeometry();
